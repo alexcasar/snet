@@ -1,0 +1,15 @@
+primera segunda tercera
+1 primera 2 segunda 0.6931471805599453
+2 segunda 3 tercera 1.203972804325936
+
+tercera tercera primera
+1 tercera 2 tercera 0.10536051565782635
+2 tercera 3 primera 0.10536051565782635
+
+primera primera primera segunda tercera cuarta
+1 primera 2 primera 0.28768207245178085
+2 primera 3 primera 0.28768207245178085
+3 primera 4 segunda 0.6931471805599453
+4 segunda 5 tercera 1.203972804325936
+5 tercera 6 cuarta 1.203972804325936
+

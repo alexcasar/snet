@@ -1,0 +1,91 @@
+[
+  {
+    "component": "dash-board",
+    "type": "static",
+    "instance-name": "stat",
+    "parameters": {
+        "board_type": "file",
+        "file_path":  "%ROOT/%CONFIG-summary.txt",
+        "board_name": "%CONFIG",
+        "row_count": 3,
+        "col_count": 3,
+        "col_headers": [
+          [
+            {"title": "COST FUNC"},
+            {"title": "PA"},
+            {"title": "F1"}
+          ]
+        ]
+    }
+  },
+  {
+    "component": "grammar-learner",
+    "common-parameters": {
+	"input_parses": 	"%ROOT/data",
+        "output_categories": 	"%LEAF",
+        "output_grammar": 	"%LEAF",
+        "output_statistics": 	"%LEAF/stats.txt",
+        "tmpath": 		"/var/tmp/",
+        "verbose": 		"log+",
+        "temp_dir": 		"",
+
+	"left_wall": 		"", 
+	"period": 		false,
+	"min_word_count": 	1,
+
+	"grammar_rules": 	2,
+        "clustering_metric": 	["silhouette", "cosine"],
+
+	"max_disjuncts":	1000000,
+	"stop_words":		[],
+	"top_level": 		0.01,
+
+	"context": 		2,
+	"word_space": 		"sparse",
+	"-clustering": 		"group",
+	"clustering": 		["aglomerative", "ward"],
+
+	"cluster_range": 	[50],
+	"max_sentence_length":	99,
+
+	"pa_col": 		"1",
+	"f1_col": 		"2"
+    },
+    "specific-parameters": [
+      { "add_disjunct_costs": false, "disjunct_cost_func": "no_cost_added",	"db_row": "%RUN_COUNT" },
+      { "add_disjunct_costs": true,  "disjunct_cost_func": "reverse_count", 	"db_row": "%RUN_COUNT" },
+      { "add_disjunct_costs": true,  "disjunct_cost_func": "mi_simplified", 	"db_row": "%RUN_COUNT" }
+    ]
+  },
+  {
+    "component": "grammar-tester",
+    "common-parameters": {
+	"inherit_prev_path": 	true,
+	"input_grammar": 	"%PREV.output_grammar",
+	"input_corpus": 	"%PREV.input_parses",
+	"ref_path": 		"%PREV.input_parses",
+	"output_path": 		"%PREV.output_grammar",
+	"grammar_root": 	"%ROOT/dict",
+	"template_path": 	"%ROOT/dict/poc-turtle",
+	"linkage_limit": 	"1000",
+	"timeout": 		1,
+	"rm_grammar_dir": 	true,
+	"ignore_left_wall": 	true,
+	"ignore_period": 	true,
+	"store_dict_localy": 	true,
+	"calc_parse_quality": 	true,
+	"strip_suffix": 	true,
+	"ull_input": 		true
+    },
+    "specific-parameters": [
+	{
+	  "output_format": "ull", 
+	  "post-exec-req": [
+	    {"obj": "stat.set", "row": "%PREV.db_row", "col": 		 "0", "val": "%PREV.disjunct_cost_func"},
+	    {"obj": "stat.set", "row": "%PREV.db_row", "col": "%PREV.pa_col", "val": "{PA}"},
+	    {"obj": "stat.set", "row": "%PREV.db_row", "col": "%PREV.f1_col", "val": "{F1}"}
+	  ] 
+	}
+    ]
+  }
+]
